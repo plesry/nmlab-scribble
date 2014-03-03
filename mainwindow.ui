@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>510</width>
+    <height>415</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>510</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="fileMenu">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="saveAsMenu">
+     <property name="title">
+      <string>&amp;Save As</string>
+     </property>
+    </widget>
+    <addaction name="openAct"/>
+    <addaction name="saveAsMenu"/>
+    <addaction name="printAct"/>
+    <addaction name="separator"/>
+    <addaction name="exitAct"/>
+   </widget>
+   <widget class="QMenu" name="optionMenu">
+    <property name="title">
+     <string>&amp;Option</string>
+    </property>
+    <addaction name="penColorAct"/>
+    <addaction name="brushColorAct"/>
+    <addaction name="penWidthAct"/>
+    <addaction name="separator"/>
+    <addaction name="clearScreenAct"/>
+   </widget>
+   <widget class="QMenu" name="helpMenu">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="aboutAct"/>
+    <addaction name="aboutQtAct"/>
+   </widget>
+   <widget class="QMenu" name="editMenu">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="undoAct"/>
+    <addaction name="redoAct"/>
+   </widget>
+   <addaction name="fileMenu"/>
+   <addaction name="editMenu"/>
+   <addaction name="optionMenu"/>
+   <addaction name="helpMenu"/>
+  </widget>
+  <widget class="QToolBar" name="drawToolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="drawPencilAct"/>
+   <addaction name="drawLineAct"/>
+   <addaction name="drawRectAct"/>
+   <addaction name="drawRoundRectAct"/>
+   <addaction name="drawElliAct"/>
+   <addaction name="eraseAct"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget">
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="lineStyleLabel">
+       <property name="text">
+        <string>LineStyle</string>
+       </property>
+       <property name="buddy">
+        <cstring>lineStyleComboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="lineStyleComboBox"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="brushStyleLabel">
+       <property name="text">
+        <string>BrushStyle</string>
+       </property>
+       <property name="buddy">
+        <cstring>brushStyleComboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="brushStyleComboBox"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="lineWidthLabel">
+       <property name="text">
+        <string>Width</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="lineWidthSlider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lineWidthNumber">
+       <property name="text">
+        <string>WIDTH</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="aboutAct">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="aboutQtAct">
+   <property name="text">
+    <string>About &amp;Qt</string>
+   </property>
+  </action>
+  <action name="penColorAct">
+   <property name="text">
+    <string>&amp;Pen Color...</string>
+   </property>
+  </action>
+  <action name="penWidthAct">
+   <property name="text">
+    <string>Pen &amp;Width...</string>
+   </property>
+  </action>
+  <action name="clearScreenAct">
+   <property name="text">
+    <string>&amp;Clear Screen</string>
+   </property>
+  </action>
+  <action name="undoAct">
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+  </action>
+  <action name="redoAct">
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+  </action>
+  <action name="openAct">
+   <property name="text">
+    <string>&amp;Open</string>
+   </property>
+  </action>
+  <action name="printAct">
+   <property name="text">
+    <string>&amp;Print...</string>
+   </property>
+  </action>
+  <action name="exitAct">
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="drawPencilAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/pencil.gif</normaloff>:/icons/pencil.gif</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Pencil</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw arbitrary</string>
+   </property>
+  </action>
+  <action name="drawLineAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/line.gif</normaloff>:/icons/line.gif</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Line</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw a line</string>
+   </property>
+  </action>
+  <action name="drawRectAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/rect.gif</normaloff>:/icons/rect.gif</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Rectangle</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw a rectangle</string>
+   </property>
+  </action>
+  <action name="drawRoundRectAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/roundrect.gif</normaloff>:/icons/roundrect.gif</iconset>
+   </property>
+   <property name="text">
+    <string>R&amp;ounded Rectangle</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw a rounded rectangle</string>
+   </property>
+  </action>
+  <action name="drawElliAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/ellipse.gif</normaloff>:/icons/ellipse.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Elli&amp;pse</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw an ellipse</string>
+   </property>
+  </action>
+  <action name="brushColorAct">
+   <property name="text">
+    <string>&amp;Brush Color...</string>
+   </property>
+  </action>
+  <action name="eraseAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/eraser.gif</normaloff>:/icons/eraser.gif</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Eraser</string>
+   </property>
+   <property name="toolTip">
+    <string>Eraser</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="scribble.qrc"/>
+ </resources>
+ <connections/>
+</ui>

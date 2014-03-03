@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/line.gif</file>
+        <file>icons/rect.gif</file>
+        <file>icons/ellipse.gif</file>
+        <file>icons/roundrect.gif</file>
+        <file>icons/pencil.gif</file>
+        <file>icons/text.gif</file>
+        <file>icons/select.gif</file>
+        <file>icons/polygon.gif</file>
+        <file>icons/pie.gif</file>
+        <file>icons/eraser.gif</file>
+        <file>icons/curve.gif</file>
+    </qresource>
+</RCC>
