@@ -4,19 +4,20 @@
 ScribbleArea::ScribbleArea(QWidget *parent)
     : QWidget(parent)
 {
+    setMouseTracking(true);
     setAttribute(Qt::WA_StaticContents);
     modified = false;
+    selected = false;
     scribbling = false;
+    pasting = false;
 
     myPenWidth = 5;
-    myPenColor = Qt::blue;
-    myBrushColor = Qt::white;
+    myPenColor = Qt::black;
+    myBrushColor = Qt::gray;
     myPenStyle = Qt::SolidLine;
-    myBrushStyle = Qt::NoBrush;
+    myBrushStyle = Qt::SolidPattern;
 
-    myShape = PENCIL;
-    ratioXRad = 8;
-    ratioYRad = 8;
+    myShape = LINE;
 
     image = QImage(size(), QImage::Format_ARGB32_Premultiplied);
     image.fill(qRgb(255, 255, 255));
@@ -24,6 +25,8 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     imageHistory.clear();
     imageHistory.append(image);
     idxHistory = 0;
+
+    polyPoints = 0;
 }
 
 bool ScribbleArea::openImage(const QString &fileName)
@@ -36,6 +39,7 @@ bool ScribbleArea::openImage(const QString &fileName)
     resizeImage(&loadedImage, newSize);
     image = loadedImage;
     modified = false;
+    selected = false;
     update();
 
     imageHistory.clear();
@@ -97,11 +101,35 @@ void ScribbleArea::clearImage()
     update();
 }
 
+
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
+        if (selected) {
+            image = imageHistory[idxHistory];
+            update();
+            selected = false;
+        }
+
+        if (myShape == SELECT) selected = true;
+
         lastPoint = event->pos();
         scribbling = true;
+    }
+
+    if (pasting) {
+        QPainter painter(&image);
+        painter.drawImage(event->pos(), qApp->clipboard()->image());
+        update();
+
+        togglePasting();
+        modified = true;
+
+        imageHistory.erase(imageHistory.begin() + idxHistory+1, imageHistory.end());
+        imageHistory.append(image);
+        idxHistory++;
+
+        lastPoint = event->pos();
     }
 }
 
@@ -112,19 +140,42 @@ void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
             image = imageHistory[idxHistory];
         drawShape(event->pos(), myShape);
     }
+
+    if (pasting) {
+        image = imageHistory[idxHistory];
+
+        QPainter painter(&image);
+        painter.drawImage(event->pos(), qApp->clipboard()->image());
+        update();
+    }
 }
 
 void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && scribbling) {
-        drawShape(event->pos(), myShape);
+        if (myShape == TEXT) {
+            bool ok;
+            QPainter painter(&image);
+            QString text = QInputDialog::getText(this, tr("Input text"),
+                                                      tr("Please input a text:"), QLineEdit::Normal,
+                                                      "Hello for NMLab", &ok);
+            if (ok && !text.isEmpty()) painter.drawText(lastPoint, text);
+        } else { drawShape(event->pos(), myShape); }
+
         scribbling = false;
         modified = true;
-        lastPoint = event->pos();
 
-        imageHistory.erase(imageHistory.begin() + idxHistory+1, imageHistory.end());
-        imageHistory.append(image);
-        idxHistory++;
+        if (selected) {
+            modified = false;
+            selectedArea = QRect(lastPoint, event->pos());
+            selectedImage = imageHistory[idxHistory].copy(QRect(lastPoint, event->pos()));
+        } else {
+            imageHistory.erase(imageHistory.begin() + idxHistory+1, imageHistory.end());
+            imageHistory.append(image);
+            idxHistory++;
+        }
+
+        lastPoint = event->pos();
     }
 }
 
@@ -146,15 +197,20 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 }
 
-void ScribbleArea::drawShape(const QPointF endPoint, const Shape shape)
+void ScribbleArea::drawShape(const QPoint endPoint, const Shape shape)
 {
     QPainter painter(&image);
     QColor color = (shape == ERASER)? myBrushColor : myPenColor;
-    painter.setPen(QPen(color, myPenWidth, myPenStyle, Qt::RoundCap,
-                        Qt::RoundJoin));
-    painter.setBrush(QBrush(myBrushColor, myBrushStyle));
 
-    QPointF p = endPoint - lastPoint;
+    if (shape == SELECT) {
+        painter.setPen(QPen(Qt::black, 1, Qt::DashLine, Qt::FlatCap, Qt::BevelJoin));
+        painter.setBrush(QBrush(Qt::NoBrush));
+    } else {
+        painter.setPen(QPen(color, myPenWidth, myPenStyle, Qt::RoundCap, Qt::RoundJoin));
+        painter.setBrush(QBrush(myBrushColor, myBrushStyle));
+    }
+
+    QPoint p = endPoint - lastPoint;
     switch (shape)
     {
         case ERASER:
@@ -165,20 +221,23 @@ void ScribbleArea::drawShape(const QPointF endPoint, const Shape shape)
         case LINE:
             painter.drawLine(lastPoint, endPoint);
             break;
+        case SELECT:
         case RECT:
-            painter.drawRect(QRectF(lastPoint, endPoint));
+            painter.drawRect(QRect(lastPoint, endPoint));
             break;
         case ROUNDRECT:
-            painter.drawRoundedRect(QRectF(lastPoint, endPoint),
-                                    p.x()*ratioXRad/100,
-                                    p.y()*ratioYRad/100       );
+            painter.drawRoundedRect(QRect(lastPoint, endPoint),
+                                    p.x()*10/100,
+                                    p.y()*10/100       );
             break;
         case ELLIPSE:
-            painter.drawEllipse(QRectF(lastPoint, endPoint));
+            painter.drawEllipse(QRect(lastPoint, endPoint));
             break;
-        case POLYGON:
-        case TEXT:
-        case BRUSH:
+        //case POLYGON:
+        //case TEXT:
+
+        //case CURVE:
+        //case PIE:
         default:
             break;
     }
@@ -224,4 +283,28 @@ void ScribbleArea::moveHistory(int x)
     idxHistory += x;
     image = imageHistory[idxHistory];
     update();
+}
+
+void ScribbleArea::copySelectedImage()
+{
+    qApp->clipboard()->setImage(selectedImage);
+}
+
+void ScribbleArea::clearSelected(bool clearArea)
+{
+    image = imageHistory[idxHistory];
+    selected = false;
+    update();
+
+    if (clearArea) {
+        QPainter painter(&image);
+        painter.setPen(QPen(Qt::NoPen));
+        painter.setBrush(QBrush(Qt::white));
+        painter.drawRect(selectedArea);
+        update();
+
+        imageHistory.erase(imageHistory.begin() + idxHistory+1, imageHistory.end());
+        imageHistory.append(image);
+        idxHistory++;
+    }
 }

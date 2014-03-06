@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>510</width>
-    <height>415</height>
+    <width>539</width>
+    <height>460</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>510</width>
+     <width>539</width>
      <height>27</height>
     </rect>
    </property>
@@ -29,7 +29,7 @@
     </property>
     <widget class="QMenu" name="saveAsMenu">
      <property name="title">
-      <string>&amp;Save As</string>
+      <string>Save &amp;As</string>
      </property>
     </widget>
     <addaction name="openAct"/>
@@ -44,7 +44,6 @@
     </property>
     <addaction name="penColorAct"/>
     <addaction name="brushColorAct"/>
-    <addaction name="penWidthAct"/>
     <addaction name="separator"/>
     <addaction name="clearScreenAct"/>
    </widget>
@@ -83,62 +82,99 @@
    <addaction name="drawRoundRectAct"/>
    <addaction name="drawElliAct"/>
    <addaction name="eraseAct"/>
+   <addaction name="drawTextAct"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="windowTitle">
+    <string>Tools</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <widget class="QWidget" name="dockWidgetContent">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QLabel" name="lineStyleLabel">
-       <property name="text">
-        <string>LineStyle</string>
-       </property>
-       <property name="buddy">
-        <cstring>lineStyleComboBox</cstring>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="penStyleLayout">
+       <item>
+        <widget class="QLabel" name="penStyleLabel">
+         <property name="text">
+          <string>LineStyle</string>
+         </property>
+         <property name="buddy">
+          <cstring>penStyleComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="penStyleComboBox"/>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QComboBox" name="lineStyleComboBox"/>
+      <layout class="QHBoxLayout" name="brushStyleLayout">
+       <item>
+        <widget class="QLabel" name="brushStyleLabel">
+         <property name="text">
+          <string>BrushStyle</string>
+         </property>
+         <property name="buddy">
+          <cstring>brushStyleComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="brushStyleComboBox"/>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QLabel" name="brushStyleLabel">
-       <property name="text">
-        <string>BrushStyle</string>
-       </property>
-       <property name="buddy">
-        <cstring>brushStyleComboBox</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="brushStyleComboBox"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="lineWidthLabel">
-       <property name="text">
-        <string>Width</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSlider" name="lineWidthSlider">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="lineWidthNumber">
-       <property name="text">
-        <string>WIDTH</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="penWidthLayout">
+       <item>
+        <widget class="QLabel" name="penWidthLabel">
+         <property name="text">
+          <string>Width</string>
+         </property>
+         <property name="buddy">
+          <cstring>penWidthSlider</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="penWidthSlider">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="penWidthNumber">
+         <property name="text">
+          <string>WIDTH</string>
+         </property>
+         <property name="buddy">
+          <cstring>penWidthSlider</cstring>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="selectAct"/>
+   <addaction name="cutAct"/>
+   <addaction name="copyAct"/>
+   <addaction name="pasteAct"/>
   </widget>
   <action name="aboutAct">
    <property name="text">
@@ -199,7 +235,7 @@
      <normaloff>:/icons/pencil.gif</normaloff>:/icons/pencil.gif</iconset>
    </property>
    <property name="text">
-    <string>&amp;Pencil</string>
+    <string>Pencil</string>
    </property>
    <property name="toolTip">
     <string>Draw arbitrary</string>
@@ -214,7 +250,7 @@
      <normaloff>:/icons/line.gif</normaloff>:/icons/line.gif</iconset>
    </property>
    <property name="text">
-    <string>&amp;Line</string>
+    <string>Line</string>
    </property>
    <property name="toolTip">
     <string>Draw a line</string>
@@ -229,7 +265,7 @@
      <normaloff>:/icons/rect.gif</normaloff>:/icons/rect.gif</iconset>
    </property>
    <property name="text">
-    <string>&amp;Rectangle</string>
+    <string>Rectangle</string>
    </property>
    <property name="toolTip">
     <string>Draw a rectangle</string>
@@ -244,7 +280,7 @@
      <normaloff>:/icons/roundrect.gif</normaloff>:/icons/roundrect.gif</iconset>
    </property>
    <property name="text">
-    <string>R&amp;ounded Rectangle</string>
+    <string>Rounded Rectangle</string>
    </property>
    <property name="toolTip">
     <string>Draw a rounded rectangle</string>
@@ -259,7 +295,7 @@
      <normaloff>:/icons/ellipse.gif</normaloff>:/icons/ellipse.gif</iconset>
    </property>
    <property name="text">
-    <string>Elli&amp;pse</string>
+    <string>Ellipse</string>
    </property>
    <property name="toolTip">
     <string>Draw an ellipse</string>
@@ -279,10 +315,121 @@
      <normaloff>:/icons/eraser.gif</normaloff>:/icons/eraser.gif</iconset>
    </property>
    <property name="text">
-    <string>&amp;Eraser</string>
+    <string>Eraser</string>
    </property>
    <property name="toolTip">
     <string>Eraser</string>
+   </property>
+  </action>
+  <action name="drawPolyAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/polygon.gif</normaloff>:/icons/polygon.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Polygon</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw a polygon (right-click done)</string>
+   </property>
+  </action>
+  <action name="drawTextAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/text.gif</normaloff>:/icons/text.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Text</string>
+   </property>
+   <property name="toolTip">
+    <string>Put a text</string>
+   </property>
+  </action>
+  <action name="drawCurveAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/curve.gif</normaloff>:/icons/curve.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Curve</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw a curve</string>
+   </property>
+  </action>
+  <action name="selectAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/select.gif</normaloff>:/icons/select.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Select</string>
+   </property>
+   <property name="toolTip">
+    <string>Select</string>
+   </property>
+  </action>
+  <action name="drawPieAct">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/pie.gif</normaloff>:/icons/pie.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Pie</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw a pie</string>
+   </property>
+  </action>
+  <action name="cutAct">
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/cut.png</normaloff>:/icons/cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Cut</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut the selected area</string>
+   </property>
+  </action>
+  <action name="copyAct">
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/copy.png</normaloff>:/icons/copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>C&amp;opy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy the selected area</string>
+   </property>
+  </action>
+  <action name="pasteAct">
+   <property name="icon">
+    <iconset resource="scribble.qrc">
+     <normaloff>:/icons/paste.png</normaloff>:/icons/paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Paste</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste the selected area</string>
    </property>
   </action>
  </widget>

@@ -30,19 +30,24 @@ private slots:
     void penColor();
     void brushColor();
     void penWidth();
-    void lineWidth();
     void about();
     void shape(QAction *);
-    void line();
+    void pen();
     void brush();
+
+    void cut();
+    void copy();
+    void paste();
 
 private:
     void createSaveAsMenu();
+    void createActionGroup();
+    void createToolsInDock();
 
-    void createActionGroups();
-    void setData();
-    void connectAct();
+    void connectActs();
     void setActShortcuts();
+
+    void updateActs();
 
     bool maybeSave();
     bool saveFile(const QByteArray &fileFormat);

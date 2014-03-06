@@ -11,5 +11,8 @@
         <file>icons/pie.gif</file>
         <file>icons/eraser.gif</file>
         <file>icons/curve.gif</file>
+        <file>icons/paste.png</file>
+        <file>icons/cut.png</file>
+        <file>icons/copy.png</file>
     </qresource>
 </RCC>

@@ -10,7 +10,9 @@ enum Shape {
     POLYGON,
     TEXT,
     ERASER,
-    BRUSH
+    PIE,
+    CURVE,
+    SELECT
 };
 
 enum Item

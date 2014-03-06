@@ -13,14 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(scribbleArea);
 
     createSaveAsMenu();
-    createActionGroups();
-    setData();
+    createActionGroup();
+    createToolsInDock();
 
-    connectAct();
+    connectActs();
     setActShortcuts();
 
+    updateActs();
+
     setWindowTitle(tr("My Scribble"));
-    resize(500, 500);
+    resize(800, 600);
 }
 
 MainWindow::~MainWindow()
@@ -81,21 +83,8 @@ void MainWindow::brushColor()
 
 void MainWindow::penWidth()
 {
-    bool ok;
-    int newWidth = QInputDialog::getInteger(this, tr("Scribble"),
-                                            tr("Select pen width:"),
-                                            scribbleArea->penWidth(),
-                                            1, 50, 1, &ok);
-    if (ok)
-        scribbleArea->setPenWidth(newWidth);
-}
-
-void MainWindow::lineWidth()
-{
-    int value = ui->lineWidthSlider->value();
-    QString textvalue = QString().setNum(value);
-    scribbleArea->setPenWidth(value);
-    ui->lineWidthNumber->setText(textvalue);
+    scribbleArea->setPenWidth(ui->penWidthSlider->value());
+    updateActs();
 }
 
 void MainWindow::shape(QAction *action)
@@ -103,14 +92,13 @@ void MainWindow::shape(QAction *action)
     if (action) {
         scribbleArea->setShape(Shape(action->data().toInt()));
     }
-    //#include <QDebug>
-    //qDebug() << "Triggered: " << action->data().toInt();
 }
 
-void MainWindow::line()
+
+void MainWindow::pen()
 {
-    Qt::PenStyle style = Qt::PenStyle(ui->lineStyleComboBox->itemData(
-                                      ui->lineStyleComboBox->currentIndex()).toInt());
+    Qt::PenStyle style = Qt::PenStyle(ui->penStyleComboBox->itemData(
+                                      ui->penStyleComboBox->currentIndex()).toInt());
     scribbleArea->setPenStyle(style);
 }
 
@@ -144,7 +132,7 @@ void MainWindow::createSaveAsMenu()
         ui->saveAsMenu->addAction(action);
 }
 
-void MainWindow::createActionGroups()
+void MainWindow::createActionGroup()
 {
     drawActionGroup = new QActionGroup(this);
     drawActionGroup->addAction(ui->drawPencilAct);
@@ -152,35 +140,52 @@ void MainWindow::createActionGroups()
     drawActionGroup->addAction(ui->drawRectAct);
     drawActionGroup->addAction(ui->drawRoundRectAct);
     drawActionGroup->addAction(ui->drawElliAct);
+    drawActionGroup->addAction(ui->drawPolyAct);
+    drawActionGroup->addAction(ui->drawPieAct);
+    drawActionGroup->addAction(ui->drawCurveAct);
+    drawActionGroup->addAction(ui->drawTextAct);
     drawActionGroup->addAction(ui->eraseAct);
-}
+    drawActionGroup->addAction(ui->selectAct);
 
-void MainWindow::setData()
-{
     ui->drawPencilAct->setData(QVariant(PENCIL));
     ui->drawLineAct->setData(QVariant(LINE));
     ui->drawRectAct->setData(QVariant(RECT));
     ui->drawRoundRectAct->setData(QVariant(ROUNDRECT));
     ui->drawElliAct->setData(QVariant(ELLIPSE));
+    ui->drawPolyAct->setData(QVariant(POLYGON));
+    ui->drawTextAct->setData(QVariant(TEXT));
+    ui->drawCurveAct->setData(QVariant(CURVE));
+    ui->drawPieAct->setData(QVariant(PIE));
     ui->eraseAct->setData(QVariant(ERASER));
+    ui->selectAct->setData(QVariant(SELECT));
 
-    ui->lineStyleComboBox->addItem("Solid"       , Qt::SolidLine);
-    ui->lineStyleComboBox->addItem("Dash"        , Qt::DashLine);
-    ui->lineStyleComboBox->addItem("Dot"         , Qt::DotLine);
-    ui->lineStyleComboBox->addItem("Dash Dot"    , Qt::DashDotLine);
-    ui->lineStyleComboBox->addItem("Dash Dot Dot", Qt::DashDotDotLine);
-    ui->lineStyleComboBox->addItem("None"        , Qt::NoPen);
+    ui->drawLineAct->setChecked(true);
+
+}
+
+void MainWindow::createToolsInDock()
+{
+    ui->penWidthSlider->setRange(1, 50);
+    ui->penWidthSlider->setValue(scribbleArea->penWidth());
+    QString textvalue = QString().setNum(scribbleArea->penWidth());
+    ui->penWidthNumber->setText(textvalue);
+
+    ui->penStyleComboBox->addItem("Solid"       , Qt::SolidLine);
+    ui->penStyleComboBox->addItem("Dash"        , Qt::DashLine);
+    ui->penStyleComboBox->addItem("Dot"         , Qt::DotLine);
+    ui->penStyleComboBox->addItem("Dash Dot"    , Qt::DashDotLine);
+    ui->penStyleComboBox->addItem("Dash Dot Dot", Qt::DashDotDotLine);
+    ui->penStyleComboBox->addItem("None"        , Qt::NoPen);
+    ui->penStyleComboBox->setCurrentIndex(
+                ui->penStyleComboBox->findData(QVariant(scribbleArea->penStyle())));
 
     ui->brushStyleComboBox->addItem("Solid"      , Qt::SolidPattern);
     ui->brushStyleComboBox->addItem("None"       , Qt::NoBrush);
-
-    ui->lineWidthSlider->setRange(1, 50);
-    ui->lineWidthSlider->setValue(scribbleArea->penWidth());
-    QString textvalue = QString().setNum(scribbleArea->penWidth());
-    ui->lineWidthNumber->setText(textvalue);
+    ui->brushStyleComboBox->setCurrentIndex(
+                ui->brushStyleComboBox->findData(QVariant(scribbleArea->brushStyle())));
 }
 
-void MainWindow::connectAct()
+void MainWindow::connectActs()
 {
     connect(ui->openAct, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui->exitAct, SIGNAL(triggered()), this, SLOT(close()));
@@ -188,7 +193,6 @@ void MainWindow::connectAct()
     connect(ui->redoAct, SIGNAL(triggered()), this, SLOT(redo()));
     connect(ui->penColorAct, SIGNAL(triggered()), this, SLOT(penColor()));
     connect(ui->brushColorAct, SIGNAL(triggered()), this, SLOT(brushColor()));
-    connect(ui->penWidthAct, SIGNAL(triggered()), this, SLOT(penWidth()));
 
     connect(ui->printAct, SIGNAL(triggered()), scribbleArea, SLOT(print()));
     connect(ui->clearScreenAct, SIGNAL(triggered()), scribbleArea, SLOT(clearImage()));
@@ -197,11 +201,14 @@ void MainWindow::connectAct()
     connect(ui->aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(drawActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(shape(QAction*)));
+    connect(ui->cutAct, SIGNAL(triggered()), this, SLOT(cut()));
+    connect(ui->copyAct, SIGNAL(triggered()), this, SLOT(copy()));
+    connect(ui->pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
-    connect(ui->lineStyleComboBox, SIGNAL(activated(int)), this, SLOT(line()));
+    connect(ui->penStyleComboBox, SIGNAL(activated(int)), this, SLOT(pen()));
     connect(ui->brushStyleComboBox, SIGNAL(activated(int)), this, SLOT(brush()));
 
-    connect(ui->lineWidthSlider, SIGNAL(valueChanged(int)), this, SLOT(lineWidth()));
+    connect(ui->penWidthSlider, SIGNAL(valueChanged(int)), this, SLOT(penWidth()));
 }
 
 void MainWindow::setActShortcuts()
@@ -211,6 +218,16 @@ void MainWindow::setActShortcuts()
     ui->undoAct->setShortcuts(QKeySequence::Undo);
     ui->redoAct->setShortcuts(QKeySequence::Redo);
     ui->clearScreenAct->setShortcut(tr("Ctrl+L"));
+
+    ui->cutAct->setShortcut(QKeySequence::Cut);
+    ui->copyAct->setShortcut(QKeySequence::Copy);
+    ui->pasteAct->setShortcut(QKeySequence::Paste);
+}
+
+void MainWindow::updateActs()
+{
+    ui->penWidthNumber->setText(QString().setNum(
+                                     ui->penWidthSlider->value()));
 }
 
 bool MainWindow::maybeSave()
@@ -247,3 +264,23 @@ bool MainWindow::saveFile(const QByteArray &fileFormat)
     }
 }
 
+void MainWindow::cut()
+{
+    if (scribbleArea->shape() == SELECT) {
+        scribbleArea->copySelectedImage();
+        scribbleArea->clearSelected(true);
+    }
+}
+
+void MainWindow::copy()
+{
+    if (scribbleArea->shape() == SELECT) {
+        scribbleArea->copySelectedImage();
+        scribbleArea->clearSelected(false);
+    }
+}
+
+void MainWindow::paste()
+{
+    if (scribbleArea->shape() == SELECT) scribbleArea->togglePasting();
+}

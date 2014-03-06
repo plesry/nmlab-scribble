@@ -32,6 +32,11 @@ public:
     int penWidth() const { return myPenWidth; }
     Qt::PenStyle penStyle() const { return myPenStyle; }
     Qt::BrushStyle brushStyle() const { return myBrushStyle; }
+    Shape shape() const { return myShape; }
+
+    void copySelectedImage();
+    void clearSelected(bool clearArea);
+    void togglePasting() { pasting = !pasting; }
 
 public slots:
     void clearImage();
@@ -45,26 +50,29 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
-    void drawShape(const QPointF endPoint, const Shape);
+    void drawShape(const QPoint endPoint, const Shape);
     void resizeImage(QImage *image, const QSize &newSize);
 
     bool modified;
+    bool selected;
     bool scribbling;
+    bool pasting;
     int myPenWidth;
 
     QColor myPenColor;
     QColor myBrushColor;
     Qt::PenStyle myPenStyle;
     Qt::BrushStyle myBrushStyle;
-    QPointF lastPoint;
+    QPoint lastPoint;
+    QPoint* polyPoints;
 
     QImage image;
+    QImage selectedImage;
+    QRect  selectedArea;
     QList<QImage> imageHistory;
     int idxHistory;
 
     Shape myShape;
-    int ratioXRad;
-    int ratioYRad;
 };
 
 #endif
